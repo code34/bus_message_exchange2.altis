@@ -1,0 +1,9 @@
+Author = "Code34";
+class Header {
+	minPlayers = 1;
+	maxPlayers = 2;
+	gameType = COOP;
+};
+name = "DCL";
+overviewText = "BUS MESSAGE EXCHANGE";
+overviewTextLocked = "BUS MESSAGE EXCHANGE sample in a test mission.";

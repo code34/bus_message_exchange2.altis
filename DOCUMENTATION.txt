@@ -1,0 +1,33 @@
+V 2.0 : BME by code34 - nicolas_boiteux@yahoo.fr
+
+How call remote functions
+======================
+Call a remote function on all client
+["remotefunction", _parameter, "client"] call BME_fnc_publicvariable;
+	
+Call a remote function to a specific client
+["remotefunction", _parameter, "client", clientid] call BME_fnc_publicvariable;
+
+Call a remote function on the server
+["remotefunction", _parameter, "server"] call BME_fnc_publicvariable;
+	
+Call a remote function everywhere
+["remotefunction", _parameter, "all"] call BME_fnc_publicvariable;
+
+How to declare remote functions
+===========================
+You have to declare your remote functions as handlers. There is tow kinds of handlers
+- server handlers 
+- client handlers 
+
+The handler declaration must respect this syntax, and use those prefix:
+
+BME_netcode_server_remotefunction = { code to execute on server side };
+BME_netcode_remotefunction = { code to execute on client side };
+
+You can declare thoses handlers directly on your code, but it's more simple to use the default location:
+client side:
+- declare by default in BME_clienthandler.sqf
+
+server side:
+- declare by default in BME_serverhandler.sqf
