@@ -2,7 +2,7 @@
 	Author: code34 nicolas_boiteux@yahoo.fr
 	Copyright (C) 2013-2018 Nicolas BOITEUX
 
-	Bus Message Exchange (BME)
+	Bus Message Exchange2 (BME)
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -31,13 +31,4 @@
 	You can share, modify, distribute this script but don't remove the licence and the name of the original author
 
 	logs:
-		0.3 - Fix:
-			- fix mp handler call
-			- fix reset code
-		0.2 - Fix:
-			- add performance improvement of @Prodavec
-			- add private variable declaration
-			- fix iteration call
-			- add logs 
-			- change calling line
-		0.1 - BUS message Exchange original from A2 - Warcontext
+		2.0 - first implementation
