@@ -21,9 +21,10 @@
 	Create a main bus message between clients & server
 	
 	Usage:
-		put the directory BEM in your mission directory
 		put this code into your mission init.sqf
-		call compilefinal preprocessFileLineNumbers "BME\init.sqf";
+		call compilefinal preprocessFileLineNumbers "oo_bme.sqf";
+		call compilefinal preprocessFile "BME_clienthandler.sqf";
+		call compilefinal preprocessFile "BME_serverhandler.sqf";
 
 	See example mission in directory: bus_exchange_message.Altis
 	
