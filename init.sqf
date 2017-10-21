@@ -3,10 +3,10 @@
 		call compilefinal preprocessFile "BME_serverhandler.sqf";
 
 		global_bme = "new" call OO_BME;
-
 		"bme_addqueue" addPublicVariableEventHandler {
 			["addReceiveQueue", _this select 1] call global_bme;
 		};
+
 
 		if(local player) then {
 			while {true} do {
