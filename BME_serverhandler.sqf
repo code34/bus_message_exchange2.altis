@@ -22,10 +22,9 @@
 	*/
 
 	// Example function write log on server side
-	BME_netcode_server_tologonserver = {
-		_log = _this select 0;
-		hint format["BME: %1", _log];
-		diag_log format["BME: %1", _log];
+	BME_netcode_server_hint = {
+		hint format["BME: server side: %1", _this];
+		diag_log format["BME: server side: %1", _this];
 	};
 
 	// return true when read

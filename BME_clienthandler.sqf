@@ -18,13 +18,13 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
 	Usage: 
-		BME_netcode_remotefunction = { code to execute on client side };
+		BME_netcode_client_remotefunction = { code to execute on client side };
 	*/
 
 	// Example function hint message on client side
-	BME_netcode_tohintonclient = {
-		_message = _this select 0;
-		hint _message;
+	BME_netcode_client_hint = {
+		hint format["BME: client side: %1", _this];
+		diag_log format["BME: client side: %1", _this];
 	};
 
 	// return true when read
