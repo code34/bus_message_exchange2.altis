@@ -91,7 +91,7 @@
 		// _targetid = _this select 4;
 		//_transactid = _this select 5;
 		PUBLIC FUNCTION("array","addReceiveCallQueue") {
-			diag_log format ["%1", _this];
+			// diag_log format ["%1", _this];
 			// insert message in the queue if its for server
 			if((isserver) and ((_this select 2) isEqualTo "server")) then {
 				MEMBER("receivecallqueue", nil) pushBack _this;
@@ -105,17 +105,20 @@
 		
 		// function call by addPublicVariableEventHandler
 		// insert message in spawn queue for server / client / all
-		// _destination = _this select 2;
+		//	private _remotefunction 	= _this select 0;
+		//	private _parameters 		=  _this select 1;
+		//	private _destination		= tolower(_this select 2);
+		//	private _targetid 		= _this select 3;
 		PUBLIC FUNCTION("array","addReceiveSpawnQueue") {
-			diag_log format ["%1", _this];
+			//diag_log format ["%1", _this];
 			if((isserver) and (((_this select 2) isEqualTo "server") or ((_this select 2) isEqualTo "all"))) then {
-				MEMBER("receivespawnqueue", nil) pushBack [_this select 0, _this select 1, "server", _this select 3, _this select 4];
+				MEMBER("receivespawnqueue", nil) pushBack [_this select 0, _this select 1, "server", _this select 3];
 			};
-			
+
 			// insert message in the queue if its for client or everybody
 			// _destination = _this select 2;
 			if((local player) and (((_this select 2) isEqualTo "client") or ((_this select 2) isEqualTo "all"))) then {	
-				MEMBER("receivespawnqueue", nil) pushBack [_this select 0, _this select 1, "client", _this select 3, _this select 4];
+				MEMBER("receivespawnqueue", nil) pushBack [_this select 0, _this select 1, "client", _this select 3];
 			};
 		};
 
@@ -156,7 +159,7 @@
 						_sourceid = 0;
 					};
 					//Debug time - should be delete later
-					diag_log format ["log: %1", _message];
+					//diag_log format ["log: %1", _message];
 
 					if(isserver and (_destination isEqualTo "server")) then {
 						_code = (missionNamespace getVariable (format ["BME_netcode_server_%1", _remotefunction]));
@@ -205,7 +208,7 @@
 					
 					if (isNil "_targetid") then { _targetid = 0;};
 					//Debug time - should be delete later
-					diag_log format ["log: %1", _message];
+					//diag_log format ["log: %1", _message];
 
 					if(isserver and ((_destination isEqualTo "server") or (_destination isEqualTo "all"))) then {
 						_code = (missionNamespace getVariable (format ["BME_netcode_server_%1", _remotefunction]));
@@ -235,16 +238,16 @@
 			private _parsingtime = _this;
 			private _destination = "";
 			while { true } do {
-				bme_addqueue = MEMBER("sendcallqueue", nil) deleteAt 0;
-				if(!isnil "bme_addqueue") then {
-					switch (bme_addqueue select 2) do {
-						case "server": { publicvariableserver "bme_addqueue"; };
+				bme_add_callqueue = MEMBER("sendcallqueue", nil) deleteAt 0;
+				if(!isnil "bme_add_callqueue") then {
+					switch (bme_add_callqueue select 2) do {
+						case "server": { publicvariableserver "bme_add_callqueue"; };
 						case "client": {
-							if!((bme_addqueue select 3) isEqualTo (bme_addqueue select 4)) then{
-								(bme_addqueue select 3) publicvariableclient "bme_addqueue";
+							if!((bme_add_callqueue select 3) isEqualTo (bme_add_callqueue select 4)) then{
+								(bme_add_callqueue select 3) publicvariableclient "bme_add_callqueue";
 							} else {
-								if((local player) and (isserver)) then { MEMBER("addReceiveQueue", bme_addqueue);	};
-								publicvariable "bme_addqueue";
+								if((local player) and (isserver)) then { MEMBER("addReceiveCallQueue", bme_add_callqueue);	};
+								publicvariable "bme_add_callqueue";
 							};
 						};
 						default { };
@@ -259,26 +262,26 @@
 		PUBLIC FUNCTION("scalar","runSendSpawnQueue") {
 			private _parsingtime = _this;
 			while { true } do {
-				bme_addqueue = MEMBER("sendspawnqueue", nil) deleteAt 0;		
-				if(!isnil "bme_addqueue") then {
-					switch (bme_addqueue select 2) do {
-						case "server": { publicvariableserver "bme_addqueue"; };
+				bme_add_spawnqueue = MEMBER("sendspawnqueue", nil) deleteAt 0;		
+				if(!isnil "bme_add_spawnqueue") then {
+					switch (bme_add_spawnqueue select 2) do {
+						case "server": { publicvariableserver "bme_add_spawnqueue"; };
 
 						case "client": {
-							if(count bme_addqueue > 3) then {
-								(bme_addqueue select 3) publicvariableclient "bme_addqueue";
+							if(count bme_add_spawnqueue > 3) then {
+								(bme_add_spawnqueue select 3) publicvariableclient "bme_add_spawnqueue";
 							} else {
-								if((local player) and (isserver)) then { MEMBER("addReceiveQueue", bme_addqueue);	};
-								publicvariable "bme_addqueue";
+								if((local player) and (isserver)) then { MEMBER("addReceiveSpawnQueue", bme_add_spawnqueue);	};
+								publicvariable "bme_add_spawnqueue";
 							};
 						};
 
 						default {
 							if(isserver) then {
-								if!(local player) then { publicvariableserver "bme_addqueue"; };
+								if!(local player) then { publicvariableserver "bme_add_spawnqueue"; };
 							} ;
-							if(local player) then { MEMBER("addReceiveQueue", bme_addqueue);	};
-							publicvariable "bme_addqueue";
+							if(local player) then { MEMBER("addReceiveSpawnQueue", bme_add_spawnqueue);	};
+							publicvariable "bme_add_spawnqueue";
 						};
 					};
 				};
