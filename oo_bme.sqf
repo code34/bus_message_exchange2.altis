@@ -26,35 +26,11 @@
 		
 		PUBLIC FUNCTION("","constructor") {
 			MEMBER("sendqueue", []);
-			MEMBER("sendcallqueue", []);
 			MEMBER("receivequeue", []);
-			MEMBER("receivecallqueue", []);
 
 			["runReceiveQueue", 0.1] spawn _self;
 			["runSendQueue", 0.1] spawn _self;
 		};
-
-
-		PUBLIC FUNCTION("array","remoteCall") {
-			private ["_remotefunction", "_variable", "_destination", "_playerid"];
-
-			_remotefunction 	= _this select 0;
-			_variable 		=  _this select 1;
-			_destination		= tolower(_this select 2);
-			_playerid 		= _this select 3;
-			
-			if!(_remotefunction isEqualType "") exitwith { MEMBER("log", "BME: wrong type variablename parameter, should be STRING"); false; };
-			if(isnil "_variable") exitwith { MEMBER("log", format["BME:  Variable data for %1 handler is nil", _remotefunction]); false; };
-			if!(_destination isEqualType "") exitwith { MEMBER("log", "BME: wrong type destination parameter, should be STRING"); false; };
-			if!(_destination in ["client", "server", "all"]) exitwith {MEMBER("log", "BME: wrong destination parameter should be client|server|all"); false; };
-			
-			if(isNil "_playerid") then {
-				MEMBER("sendcallqueue", nil) pushBack [_remotefunction, _variable, _destination];
-			} else {
-				MEMBER("sendcallqueue", nil) pushBack [_remotefunction, _variable, _destination, _playerid];
-			};
-			true;
-		};		
 
 		PUBLIC FUNCTION("array","remoteSpawn") {
 			private ["_remotefunction", "_variable", "_destination", "_playerid"];
