@@ -22,9 +22,9 @@
 	
 	Usage:
 		put this code into your mission init.sqf
-		call compilefinal preprocessFileLineNumbers "oo_bme.sqf";
-		call compilefinal preprocessFile "BME_clienthandler.sqf";
-		call compilefinal preprocessFile "BME_serverhandler.sqf";
+		call compile preprocessFileLineNumbers "oo_bme.sqf";
+		call compile preprocessFile "BME_clienthandler.sqf";
+		call compile preprocessFile "BME_serverhandler.sqf";
 
 	See example mission in directory: bus_exchange_message.Altis
 	
@@ -32,4 +32,5 @@
 	You can share, modify, distribute this script but don't remove the licence and the name of the original author
 
 	logs:
+		2.1 - add remote call
 		2.0 - first implementation
