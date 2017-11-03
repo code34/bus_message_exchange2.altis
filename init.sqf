@@ -8,7 +8,7 @@
 
 		if(local player) then {
 			while {true} do {
-				_result= ["remoteCall", ["getServerName",  "", "server"]] call global_bme;
+				_result= ["remoteCall", ["getServerName",  name player, "server"]] call global_bme;
 				hint format ["result: %1", _result];
 				sleep 2;
 			};

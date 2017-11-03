@@ -30,7 +30,7 @@
 	BME_netcode_server_getServerName = {
 		if(isNil "counterserver") then { counterserver = 0;};
 		counterserver = counterserver + 1;
-		format ["my name is server%1 and i return you a result", counterserver];
+		format ["hello %1, my name is server%2 and i return you a result", _this, counterserver];
 	};	
 
 	// return true when read
