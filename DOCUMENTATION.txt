@@ -20,12 +20,18 @@
 
 	/*
 	Function: 
-
 	_bme = "new" call OO_BME;
-	"bme_addqueue" addPublicVariableEventHandler {
-		["addReceiveQueue", _this select 1] call _bme;
-	};
 	Create a new bme object (require to create at same time a handler)
+	*/
+
+	/*
+	Function : ["remoteCall", ["remotefunction", data, "target", targetid, defaultreturn, releasetime ]] call global_bme;
+	@remotefunction is a string declare in clienthandler or serverhandler file
+	@data paramters of remotefunction
+	@target is a string "client" or "server") declare the target where the remote function will be exectued
+	@targetid clientid of the target
+	@defaultreturn : default return if no return of target
+	@releasetime: limit of time to wait for an answer of target
 	*/
 
 	/*
