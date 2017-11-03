@@ -22,9 +22,10 @@
 
 	CLASS("OO_BME")
 		PRIVATE VARIABLE("array","sendspawnqueue");
-		PRIVATE VARIABLE("array","receivespawnqueue");
 		PRIVATE VARIABLE("array","sendcallqueue");
+		PRIVATE VARIABLE("array","receivespawnqueue");
 		PRIVATE VARIABLE("array","receivecallqueue");
+		PRIVATE VARIABLE("array","receiveloopbackqueue");
 		PRIVATE VARIABLE("scalar","transactid");
 		
 		PUBLIC FUNCTION("","constructor") {
@@ -32,12 +33,27 @@
 			MEMBER("receivespawnqueue", []);
 			MEMBER("sendcallqueue", []);
 			MEMBER("receivecallqueue", []);
+			MEMBER("receiveloopbackqueue", []);
 			MEMBER("transactid", 0);
+			MEMBER("declareHandler", nil);
 
 			["runReceiveCallQueue", 0.1] spawn _self;
 			["runReceiveSpawnQueue", 0.1] spawn _self;
 			["runSendCallQueue", 0.1] spawn _self;
 			["runSendSpawnQueue", 0.1] spawn _self;
+		};
+
+		PUBLIC FUNCTION("","declareHandler") {
+			missionNamespace setVariable ["bme_handlers", _self];
+			"bme_add_spawnqueue" addPublicVariableEventHandler {
+				["addReceiveSpawnQueue", _this select 1] call bme_handlers;
+			};
+			"bme_add_callqueue" addPublicVariableEventHandler {
+				["addReceiveCallQueue", _this select 1] call bme_handlers;
+			};
+			"bme_add_loopback" addPublicVariableEventHandler {
+				["addReceiveLoopbackQueue", _this select 1] call bme_handlers;
+			};
 		};
 
 		//  Entry function for remote spawn
@@ -78,8 +94,7 @@
 			if(isNil "_targetid") exitwith {MEMBER("log", "BME: Client targetID must be define"); false; };
 			
 			MEMBER("sendcallqueue", nil) pushBack [_remotefunction, _parameters, _destination, clientOwner, _targetid, _transactid];
-			while { (bme_answer select 1) isEqualTo _transactid } do { sleep 0.1;};
-			bme_answer select 0;
+			MEMBER("getLoopBackReturn", _transactid);
 		};
 
 		// function call by addPublicVariableEventHandler
@@ -101,6 +116,14 @@
 			if((local player) and ((_this select 2) isEqualTo "client")) then {	
 				MEMBER("receivecallqueue", nil) pushBack _this;
 			};
+		};
+
+		// function loopback by addPublicVariableEventHandler
+		// insert message in loopback queue for server / client
+		// _transactid = _this select 0;
+		// _return = _this select 1;
+		PUBLIC FUNCTION("array","addReceiveLoopBackQueue") {
+			MEMBER("receiveloopbackqueue", nil) pushBack _this;
 		};
 		
 		// function call by addPublicVariableEventHandler
@@ -124,9 +147,12 @@
 
 		// send a loopback result
 		// should be rewrite with a pool for transactif / stream feature
-		PUBLIC FUNCTION("array","loopBack") {
-			bme_answerqueue = [_this select 1, _this select 2];
-			(_this select 0) publicVariableClient "bme_answerqueue";
+		//	private _transactid 		=  _this select 0;
+		//	private _targetid	 	= _this select 1;
+		//	private _return	 		= _this select 3;
+		PUBLIC FUNCTION("array","sendLoopBack") {
+			bme_add_loopback = [_this select 0, _this select 2];
+			(_this select 1) publicVariableClient "bme_add_loopback";
 		};
 
 		// unpop queue of call receive messages
@@ -165,7 +191,7 @@
 						_code = (missionNamespace getVariable (format ["BME_netcode_server_%1", _remotefunction]));
 						if!(isnil "_code") then {
 							_array =  [_transactid, _sourceid, (_parameters call _code)];
-							MEMBER("loopBack", _array);
+							MEMBER("sendLoopBack", _array);
 						} else {
 							MEMBER("log", format["BME: server handler function for %1 doesnt exist", _remotefunction]);
 						};
@@ -175,7 +201,7 @@
 						_code = (missionNamespace getVariable (format ["BME_netcode_client_%1", _remotefunction]));
 						if!(isnil "_code") then {
 							_array =  [_transactid, _sourceid, (_parameters call _code)];
-							MEMBER("loopBack", _array);
+							MEMBER("sendLoopBack", _array);
 						} else {
 							MEMBER("log", format["BME: client handler function for %1 doesnt exist", _remotefunction]);
 						};
@@ -184,6 +210,30 @@
 				sleep _parsingtime;
 			};
 		};		
+
+		// unpop queue of loopback receive messages
+		// execute the corresponding code
+		PUBLIC FUNCTION("scalar","getLoopBackReturn") {
+			private _run = true;
+			private _transactid = _this;
+			private _index = 0;
+			private _return = "";
+
+			while { _run } do {
+				{
+					if((_x select 0) isEqualTo _transactid) then {
+						_run = false;
+						_return = _x select 1;
+						MEMBER("receiveloopbackqueue", nil) deleteAt _forEachIndex;
+					};
+				}foreach MEMBER("receiveloopbackqueue", nil);
+				_index = _index + 1;
+				if (_index > 200) then { _run = false;};
+				sleep 0.01;
+			};
+			_return;
+		};
+
 
 		// unpop queue of spawn receive messages
 		// execute the corresponding code
@@ -295,7 +345,11 @@
 		};
 
 		PUBLIC FUNCTION("","deconstructor") { 
+			DELETE_VARIABLE("transactid");
 			DELETE_VARIABLE("sendspawnqueue");
+			DELETE_VARIABLE("sendcallqueue");
 			DELETE_VARIABLE("receivespawnqueue");
+			DELETE_VARIABLE("receivecallqueue");
+			DELETE_VARIABLE("receiveloopbackqueue");
 		};
 	ENDCLASS;

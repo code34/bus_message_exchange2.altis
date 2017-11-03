@@ -2,15 +2,18 @@
 		call compile preprocessFile "BME_clienthandler.sqf";
 		call compile preprocessFile "BME_serverhandler.sqf";
 
-		global_bme = "new" call OO_BME;
-		
-		"bme_add_spawnqueue" addPublicVariableEventHandler {
-			["addReceiveSpawnQueue", _this select 1] call global_bme;
+		sleep 2;
+
+		global_bme = "new" call OO_BME;	
+
+		if(local player) then {
+			while {true} do {
+				_result= ["remoteCall", ["getServerName",  "", "server"]] call global_bme;
+				hint format ["result: %1", _result];
+				sleep 2;
+			};
 		};
 
-		"bme_add_callqueue" addPublicVariableEventHandler {
-			["addReceiveCallQueue", _this select 1] call global_bme;
-		};
 
 		if(local player) then {
 			while {true} do {
@@ -27,10 +30,6 @@
 				sleep 2;
 			};
 		};		
-
-		//"bme_answerqueue" addPublicVariableEventHandler {
-		//	bme_answer= _this select 1;
-		//};
 
 		//if(local player) then {
 		//	sleep 10;

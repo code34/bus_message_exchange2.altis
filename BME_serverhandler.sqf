@@ -27,5 +27,11 @@
 		diag_log format["BME: server side: %1", _this];
 	};
 
+	BME_netcode_server_getServerName = {
+		if(isNil "counterserver") then { counterserver = 0;};
+		counterserver = counterserver + 1;
+		format ["my name is server%1 and i return you a result", counterserver];
+	};	
+
 	// return true when read
 	true;
