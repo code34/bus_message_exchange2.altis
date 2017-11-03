@@ -78,23 +78,32 @@
 
 		// Entry function for remote call
 		// Endpoint for loopback result
+		//	private _remotefunction 	= _this select 0;
+		//	private _parameters 		=  _this select 1;
+		//	private _destination		= tolower(_this select 2);
+		//	private _targetid 		= _this select 3;
+		//	private _return			= _this select 4;
 		PUBLIC FUNCTION("array","remoteCall") {
 			private _remotefunction 	= _this select 0;
 			private _parameters 		=  _this select 1;
 			private _destination		= tolower(_this select 2);
 			private _targetid 		= _this select 3;
+			private _return			= param [4, []];
+			private _releasetime		= param [5, 10000, [0]];
 			private _transactid 		= (MEMBER("transactid", nil) + 1);
-			MEMBER("transactid", _transactid);
-			
+			if(_transactid > 100) then { _transactid = 0;};
+
+			MEMBER("transactid", _transactid);		
 			if!(_remotefunction isEqualType "") exitwith { MEMBER("log", "BME: wrong type variablename parameter, should be STRING"); false; };
 			if(isnil "_parameters") exitwith { MEMBER("log", format["BME:  parameters data for %1 handler is nil", _remotefunction]); false; };
 			if!(_destination isEqualType "") exitwith { MEMBER("log", "BME: wrong type destination parameter, should be STRING"); false; };
 			if!(_destination in ["client", "server"]) exitwith {MEMBER("log", "BME: wrong destination parameter should be client|server"); false; };
-			if(_destination isEqualTo "server") then { _targetid = 0;};
+			if(_destination isEqualTo "server") then { _targetid = 2;};
 			if(isNil "_targetid") exitwith {MEMBER("log", "BME: Client targetID must be define"); false; };
-			
+
+			private _array= [_transactid, _return, _releasetime];
 			MEMBER("sendcallqueue", nil) pushBack [_remotefunction, _parameters, _destination, clientOwner, _targetid, _transactid];
-			MEMBER("getLoopBackReturn", _transactid);
+			MEMBER("getLoopBackReturn", _array);
 		};
 
 		// function call by addPublicVariableEventHandler
@@ -213,22 +222,25 @@
 
 		// unpop queue of loopback receive messages
 		// execute the corresponding code
-		PUBLIC FUNCTION("scalar","getLoopBackReturn") {
+		// private _transactid = _this select 0;
+		// private _return = _this select 1;		
+		// private _releasetime = _this select 2;
+		PUBLIC FUNCTION("array","getLoopBackReturn") {
 			private _run = true;
-			private _transactid = _this;
+			private _transactid = _this select 0;
+			private _return = _this select 1;
 			private _index = 0;
-			private _return = "";
 
 			while { _run } do {
 				{
 					if((_x select 0) isEqualTo _transactid) then {
 						_run = false;
-						_return = _x select 1;
+						if!(isNil {_x select 1}) then { _return = _x select 1;};
 						MEMBER("receiveloopbackqueue", nil) deleteAt _forEachIndex;
 					};
 				}foreach MEMBER("receiveloopbackqueue", nil);
 				_index = _index + 1;
-				if (_index > 200) then { _run = false;};
+				if (_index > (_this select 2)) then { _run = false;};
 				sleep 0.01;
 			};
 			_return;
