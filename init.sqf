@@ -7,19 +7,23 @@
 		global_bme = "new" call OO_BME;	
 
 		if(local player) then {
-			while {true} do {
-				_result= ["remoteCall", ["getServerName",  name player, "server"]] call global_bme;
-				hint format ["result: %1", _result];
-				sleep 2;
+			[] spawn { 
+				while {true} do {
+					_result= ["remoteCall", ["getServerName",  name player, "server"]] call global_bme;
+					hint format ["RemoteCall: %1", _result];
+					sleep 2;
+				};
 			};
 		};
 
 
 		if(local player) then {
-			while {true} do {
-				_message = "hello server, message send from client";
-				["remoteSpawn", ["hint", _message, "server"]] call global_bme;
-				sleep 2;
+			[] spawn { 
+				while {true} do {
+					_message = "hello server, message send from client";
+					["remoteSpawn", ["hint", _message, "server"]] call global_bme;
+					sleep 2;
+				};
 			};
 		};
 
