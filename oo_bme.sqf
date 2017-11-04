@@ -29,6 +29,7 @@
 		PRIVATE VARIABLE("scalar","transactid");
 		
 		PUBLIC FUNCTION("","constructor") {
+			DEBUG(#, "OO_BME::constructor")
 			MEMBER("sendspawnqueue", []);
 			MEMBER("receivespawnqueue", []);
 			MEMBER("sendcallqueue", []);
@@ -44,6 +45,7 @@
 		};
 
 		PUBLIC FUNCTION("","declareHandler") {
+			DEBUG(#, "OO_BME::declareHandler")
 			missionNamespace setVariable ["bme_handlers", _self];
 			"bme_add_spawnqueue" addPublicVariableEventHandler {
 				["addReceiveSpawnQueue", _this select 1] call bme_handlers;
@@ -58,6 +60,7 @@
 
 		//  Entry function for remote spawn
 		PUBLIC FUNCTION("array","remoteSpawn") {
+			DEBUG(#, "OO_BME::remoteSpawn")
 			private _remotefunction 	= _this select 0;
 			private _parameters 		=  _this select 1;
 			private _destination		= tolower(_this select 2);
@@ -84,6 +87,7 @@
 		//	private _targetid 		= _this select 3;
 		//	private _return			= _this select 4;
 		PUBLIC FUNCTION("array","remoteCall") {
+			DEBUG(#, "OO_BME::remoteCall")
 			private _remotefunction 	= _this select 0;
 			private _parameters 		=  _this select 1;
 			private _destination		= tolower(_this select 2);
@@ -101,7 +105,7 @@
 			if(_destination isEqualTo "server") then { _targetid = 2;};
 			if(isNil "_targetid") exitwith {MEMBER("log", "BME: Client targetID must be define"); false; };
 
-			private _array= [_transactid, _return, _releasetime];
+			private _array= [_transactid, _return, _releasetime]; 
 			MEMBER("sendcallqueue", nil) pushBack [_remotefunction, _parameters, _destination, clientOwner, _targetid, _transactid];
 			MEMBER("getLoopBackReturn", _array);
 		};
@@ -115,6 +119,7 @@
 		// _targetid = _this select 4;
 		//_transactid = _this select 5;
 		PUBLIC FUNCTION("array","addReceiveCallQueue") {
+			DEBUG(#, "OO_BME::addReceiveCallQueue")
 			// diag_log format ["%1", _this];
 			// insert message in the queue if its for server
 			if((isserver) and ((_this select 2) isEqualTo "server")) then {
@@ -132,6 +137,7 @@
 		// _transactid = _this select 0;
 		// _return = _this select 1;
 		PUBLIC FUNCTION("array","addReceiveLoopBackQueue") {
+			DEBUG(#, "OO_BME::addReceiveLoopBackQueue")
 			MEMBER("receiveloopbackqueue", nil) pushBack _this;
 		};
 		
@@ -142,6 +148,7 @@
 		//	private _destination		= tolower(_this select 2);
 		//	private _targetid 		= _this select 3;
 		PUBLIC FUNCTION("array","addReceiveSpawnQueue") {
+			DEBUG(#, "OO_BME::addReceiveSpawnQueue")
 			//diag_log format ["%1", _this];
 			if((isserver) and (((_this select 2) isEqualTo "server") or ((_this select 2) isEqualTo "all"))) then {
 				MEMBER("receivespawnqueue", nil) pushBack [_this select 0, _this select 1, "server", _this select 3];
@@ -160,6 +167,7 @@
 		//	private _targetid	 	= _this select 1;
 		//	private _return	 		= _this select 3;
 		PUBLIC FUNCTION("array","sendLoopBack") {
+			DEBUG(#, "OO_BME::sendLoopBack")
 			bme_add_loopback = [_this select 0, _this select 2];
 			(_this select 1) publicVariableClient "bme_add_loopback";
 		};
@@ -167,6 +175,7 @@
 		// unpop queue of call receive messages
 		// execute the corresponding code
 		PUBLIC FUNCTION("scalar","runReceiveCallQueue") {
+			DEBUG(#, "OO_BME::runReceiveCallQueue")
 			private _parsingtime = _this;
 			private _message = [];
 			private _remotefunction = "";
@@ -226,6 +235,7 @@
 		// private _return = _this select 1;		
 		// private _releasetime = _this select 2;
 		PUBLIC FUNCTION("array","getLoopBackReturn") {
+			DEBUG(#, "OO_BME::getLoopBackReturn")
 			private _run = true;
 			private _transactid = _this select 0;
 			private _return = _this select 1;
@@ -251,6 +261,7 @@
 		// execute the corresponding code
 		// return nothing
 		PUBLIC FUNCTION("scalar","runReceiveSpawnQueue") {
+			DEBUG(#, "OO_BME::runReceiveSpawnQueue")
 			private _parsingtime = _this;
 			private _message = [];
 			private _remotefunction = "";
@@ -297,6 +308,7 @@
 		// unpop queue of call send messages
 		// execute the corresponding code
 		PUBLIC FUNCTION("scalar","runSendCallQueue") {
+			DEBUG(#, "OO_BME::runSendCallQueue")
 			private _parsingtime = _this;
 			private _destination = "";
 			while { true } do {
@@ -322,6 +334,7 @@
 		// unpop queue of spawn send messages
 		// execute the corresponding code
 		PUBLIC FUNCTION("scalar","runSendSpawnQueue") {
+			DEBUG(#, "OO_BME::runSendSpawnQueue")
 			private _parsingtime = _this;
 			while { true } do {
 				bme_add_spawnqueue = MEMBER("sendspawnqueue", nil) deleteAt 0;		
@@ -352,11 +365,13 @@
 		};
 
 		PUBLIC FUNCTION("string","log") {
+			DEBUG(#, "OO_BME::log")
 			hint format["%1", _this];
 			diag_log format["%1", _this];
 		};
 
 		PUBLIC FUNCTION("","deconstructor") { 
+			DEBUG(#, "OO_BME::deconstructor")
 			DELETE_VARIABLE("transactid");
 			DELETE_VARIABLE("sendspawnqueue");
 			DELETE_VARIABLE("sendcallqueue");
