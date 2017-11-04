@@ -29,22 +29,4 @@
 				["remoteSpawn", ["hint", _message, "client"]] call global_bme;
 				sleep 2;
 			};
-		};		
-
-		//if(local player) then {
-		//	sleep 10;
-		//	while {true} do {
-		//		_message = "hello server, message send from client";
-		//		_answer = ["remoteCall", ["hint", _message, "server", clientOwner]] call global_bme;
-		//		hintc format ["answer %1", _answer];
-		//		sleep 2;
-		//	};
-		//};
-
-		//if(isserver) then {
-		//	while {true} do {
-		//		_message = "hello client, message send from server";
-		//		["remoteSpawn", ["hint", _message, "client"]] call global_bme;
-		//		sleep 2;
-		//	};
-		//};
+		};
