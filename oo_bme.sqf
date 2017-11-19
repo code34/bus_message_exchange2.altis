@@ -27,6 +27,7 @@
 		PRIVATE VARIABLE("array","receivecallqueue");
 		PRIVATE VARIABLE("array","receiveloopbackqueue");
 		PRIVATE VARIABLE("scalar","transactid");
+		PRIVATE VARIABLE("scalar","callreleasetime");
 		
 		PUBLIC FUNCTION("","constructor") {
 			DEBUG(#, "OO_BME::constructor")
@@ -37,6 +38,7 @@
 			MEMBER("receiveloopbackqueue", []);
 			MEMBER("transactid", 0);
 			MEMBER("declareHandler", nil);
+			MEMBER("callreleasetime", 3);
 
 			["runReceiveCallQueue", 0.1] spawn _self;
 			["runReceiveSpawnQueue", 0.1] spawn _self;
@@ -85,15 +87,14 @@
 		//	private _parameters 		=  _this select 1;
 		//	private _destination		= tolower(_this select 2);
 		//	private _targetid 		= _this select 3;
-		//	private _return			= _this select 4;
+		//	private _defaultreturn			= _this select 4;
 		PUBLIC FUNCTION("array","remoteCall") {
 			DEBUG(#, "OO_BME::remoteCall")
 			private _remotefunction 	= _this select 0;
 			private _parameters 		=  _this select 1;
 			private _destination		= tolower(_this select 2);
 			private _targetid 		= _this select 3;
-			private _return			= param [4, []];
-			private _releasetime		= param [5, 10000, [0]];
+			private _defaultreturn		= param [4, []];
 			private _transactid 		= (MEMBER("transactid", nil) + 1);
 			if(_transactid > 100) then { _transactid = 0;};
 
@@ -105,7 +106,7 @@
 			if(_destination isEqualTo "server") then { _targetid = 2;};
 			if(isNil "_targetid") exitwith {MEMBER("log", "BME: Client targetID must be define"); false; };
 
-			private _array= [_transactid, _return, _releasetime]; 
+			private _array= [_transactid, _defaultreturn]; 
 			MEMBER("sendcallqueue", nil) pushBack [_remotefunction, _parameters, _destination, clientOwner, _targetid, _transactid];
 			MEMBER("getLoopBackReturn", _array);
 		};
@@ -138,6 +139,7 @@
 		// _return = _this select 1;
 		PUBLIC FUNCTION("array","addReceiveLoopBackQueue") {
 			DEBUG(#, "OO_BME::addReceiveLoopBackQueue")
+			_this pushBack time;
 			MEMBER("receiveloopbackqueue", nil) pushBack _this;
 		};
 		
@@ -233,7 +235,7 @@
 		// execute the corresponding code
 		// private _transactid = _this select 0;
 		// private _return = _this select 1;		
-		// private _releasetime = _this select 2;
+		// private _receivetime = _this select 2;
 		PUBLIC FUNCTION("array","getLoopBackReturn") {
 			DEBUG(#, "OO_BME::getLoopBackReturn")
 			private _run = true;
@@ -247,11 +249,13 @@
 						_run = false;
 						if!(isNil {_x select 1}) then { _return = _x select 1;};
 						MEMBER("receiveloopbackqueue", nil) deleteAt _forEachIndex;
+					} else {
+						if(time - MEMBER("callreleasetime", nil) > 15) then { MEMBER("receiveloopbackqueue", nil) deleteAt _forEachIndex;	};
 					};
 				}foreach MEMBER("receiveloopbackqueue", nil);
-				_index = _index + 1;
-				if (_index > (_this select 2)) then { _run = false;};
-				sleep 0.01;
+				_index = _index + 0.05;
+				if (_index > (_this select 2)) then { _run = false; };
+				uiSleep 0.05;
 			};
 			_return;
 		};
@@ -377,5 +381,6 @@
 			DELETE_VARIABLE("receivespawnqueue");
 			DELETE_VARIABLE("receivecallqueue");
 			DELETE_VARIABLE("receiveloopbackqueue");
+			DELETE_VARIABLE("callreleasetime");
 		};
 	ENDCLASS;
