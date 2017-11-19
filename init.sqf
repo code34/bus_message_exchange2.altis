@@ -5,6 +5,12 @@
 
 		global_bme = "new" call OO_BME;	
 
+
+		/*
+			For better understanding the 3 remote functions above were declared into the example.sqf file
+		*/
+
+
 		if(local player) then {
 			[] spawn { 
 				while {true} do {
