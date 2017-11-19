@@ -44,18 +44,10 @@
 
 	How to declare remote functions
 	===========================
-	You have to declare your remote functions as handlers. There is tow kinds of handlers
-	- server handlers 
-	- client handlers 
+	You have to declare your remote functions as normal function with global declaration name
 
-	The handler declaration must respect this syntax, and use those prefix:
+	The handler declaration must respect this syntax:
 
-	BME_netcode_server_remotefunction = { code to execute on server side };
-	BME_netcode_remotefunction = { code to execute on client side };
-
-	You can declare thoses handlers directly on your code, but it's more simple to use the default location:
-	client side:
-	- declare by default in BME_clienthandler.sqf
-
-	server side:
-	- declare by default in BME_serverhandler.sqf
+	remotefunction = { code to execute on other side }
+	
+	You can declare thoses functions directly in your code. 

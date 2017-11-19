@@ -1,6 +1,5 @@
 		call compile preprocessFileLineNumbers "oo_bme.sqf";
-		call compile preprocessFile "BME_clienthandler.sqf";
-		call compile preprocessFile "BME_serverhandler.sqf";
+		call compile preprocessFile "example.sqf";
 
 		sleep 2;
 
@@ -21,7 +20,7 @@
 			[] spawn { 
 				while {true} do {
 					_message = "hello server, message send from client";
-					["remoteSpawn", ["hint", _message, "server"]] call global_bme;
+					["remoteSpawn", ["sendServerMessage", _message, "server"]] call global_bme;
 					sleep 2;
 				};
 			};
@@ -30,7 +29,7 @@
 		if(isserver) then {
 			while {true} do {
 				_message = "hello client, message send from server";
-				["remoteSpawn", ["hint", _message, "client"]] call global_bme;
+				["remoteSpawn", ["sendClientMessage", _message, "client"]] call global_bme;
 				sleep 2;
 			};
 		};

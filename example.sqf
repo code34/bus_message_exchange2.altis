@@ -3,6 +3,7 @@
 	Copyright (C) 2013-2018 Nicolas BOITEUX
 
 	Bus Message Exchange (BME)
+	Example file only containing example function that could be your own code
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,20 +19,21 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
 	Usage: 
-		BME_netcode_server_remotefunction = { code to execute on server side };
+		remotefunction = { code to execute };
 	*/
 
-	// Example function write log on server side
-	BME_netcode_server_hint = {
+	sendClientMessage = {
+		hint format["BME: client side: %1", _this];
+		diag_log format["BME: client side: %1", _this];
+	};
+
+	sendServerMessage = {
 		hint format["BME: server side: %1", _this];
 		diag_log format["BME: server side: %1", _this];
 	};
 
-	BME_netcode_server_getServerName = {
+	getServerName = {
 		if(isNil "counterserver") then { counterserver = 0;};
 		counterserver = counterserver + 1;
 		format ["hello %1, my name is server%2 and i return you a result", _this, counterserver];
 	};	
-
-	// return true when read
-	true;

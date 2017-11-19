@@ -206,7 +206,7 @@
 					//diag_log format ["log: %1", _message];
 
 					if(isserver and (_destination isEqualTo "server")) then {
-						_code = (missionNamespace getVariable (format ["BME_netcode_server_%1", _remotefunction]));
+						_code = missionNamespace getVariable _remotefunction;
 						if!(isnil "_code") then {
 							_array =  [_transactid, _sourceid, (_parameters call _code)];
 							MEMBER("sendLoopBack", _array);
@@ -216,7 +216,7 @@
 					};
 
 					if(local player and (_targetid isEqualTo clientOwner) and (_destination isEqualTo "client")) then {
-						_code = (missionNamespace getVariable (format ["BME_netcode_client_%1", _remotefunction]));
+						_code = missionNamespace getVariable _remotefunction;
 						if!(isnil "_code") then {
 							_array =  [_transactid, _sourceid, (_parameters call _code)];
 							MEMBER("sendLoopBack", _array);
@@ -283,7 +283,7 @@
 
 
 					if(isserver and ((_destination isEqualTo "server") or (_destination isEqualTo "all"))) then {
-						_code = (missionNamespace getVariable (format ["BME_netcode_server_%1", _remotefunction]));
+						_code = missionNamespace getVariable _remotefunction;
 						if!(isnil "_code") then {
 							_parameters spawn _code;
 						} else {
@@ -292,7 +292,7 @@
 					};
 
 					if(local player and ((_destination isEqualTo "client") or (_destination isEqualTo "all"))) then {
-						_code = (missionNamespace getVariable (format ["BME_netcode_client_%1", _remotefunction]));
+						_code = missionNamespace getVariable _remotefunction;
 						if!(isnil "_code") then {
 							_parameters spawn _code;
 						} else {
