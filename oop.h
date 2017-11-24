@@ -68,39 +68,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define GET_AUTO_INC(className) (NAMESPACE getVariable [AUTO_INC_VAR(className),0])
 
-#define INSTANTIATE_CLASS(className) \
-	NAMESPACE setVariable [className, { \
-	CHECK_THIS; \
-	if ((count _this) > 0) then { \
-		private _class = className; \
-		if (isNil {_this select 0}) then {_this set [0,_class]}; \
-		switch (_this select 0) do { \
-		case "new": { \
-			NAMESPACE setVariable [AUTO_INC_VAR(className), (GET_AUTO_INC(className) + 1)]; \
-			private _code = compile format ['CHECK_THIS; ENSURE_INDEX(1,nil); (["%1", (_this select 0), (_this select 1), 0]) call GETCLASS(className);', (className + "_" + str(GET_AUTO_INC(className)))]; \
-			ENSURE_INDEX(1,nil); \
-			NAMESPACE setVariable [format['%1_%2_code', className, GET_AUTO_INC(className)], _code];\
-			[CONSTRUCTOR_METHOD, (_this select 1)] call _code; \
-			_code; \
-		}; \
-		case "static":{ \
-			private _code = compile format ['CHECK_THIS; ENSURE_INDEX(1,nil); (["%1", (_this select 0), (_this select 1), 0]) call GETCLASS(className);', className]; \
-			[(_this select 1) select 0, (_this select 1) select 1] call _code; \
-		}; \
-		case "delete": { \
-			if ((count _this) == 2) then {_this set [2,nil]}; \
-			[DECONSTRUCTOR_METHOD, (_this select 2)] call (_this select 1); \
-		}; \
-		default { \
-			private _classID = _this select 0; \
-			private _member = _this select 1; \
-			private _access = DEFAULT_PARAM(3,0); \
-			_this = DEFAULT_PARAM(2,nil); \
-			private _argType = if (isNil "_this") then {""} else {typeName _this}; \
-			private _self = NAMESPACE getvariable format["%1_code", _classID]; \
-			switch (true) do {
-			
-#define FINALIZE_CLASS };};};};}]
 
 //////////////////////////////////////////////////////////////
 //  Group: Interactive (API) Macros and Definitions
@@ -221,6 +188,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MEMBER(memberStr,args) CALLCLASS(_class,memberStr,args,2)
 
 /*
+	Macro:  NEW(class, args)
+	Instanciate a new object of class with args 
+*/
+#define NEW(class, args) ["new", args] call class
+
+/*
+	Macro: DELETE(class, instance)
+	Delete the instance of object of class
+*/
+#define DELETE(instance) "deconstructor" call instance
+
+/*
+	Macro: STATIC_FUNCTION(class, fncName, args)
+	Call a static function name of class with args
+*/
+#define STATIC_FUNCTION(instance, fncName, args) call ["static", [fncName, args]] call instance
+
+/*
 	Macro: FUNC_GETVAR(varName)
 	Returns a variable of the current class, used as a function.
 	
@@ -237,3 +222,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	Ends a class's initializaton and finalizes SQF output.
 */
 #define ENDCLASS FINALIZE_CLASS
+
+#define INSTANTIATE_CLASS(className) \
+	NAMESPACE setVariable [className, { \
+	CHECK_THIS; \
+	if ((count _this) > 0) then { \
+		private _class = className; \
+		if (isNil {_this select 0}) then {_this set [0,_class]}; \
+		switch (_this select 0) do { \
+		case "new": { \
+			NAMESPACE setVariable [AUTO_INC_VAR(className), (GET_AUTO_INC(className) + 1)]; \
+			private _code = compile format ['CHECK_THIS; ENSURE_INDEX(1,nil); (["%1", (_this select 0), (_this select 1), 0]) call GETCLASS(className);', (className + "_" + str(GET_AUTO_INC(className)))]; \
+			ENSURE_INDEX(1,nil); \
+			private _classID = className + "_" + str(GET_AUTO_INC(className)); \
+			[_classID, "this", SAFE_VAR(_code), 2] call GETCLASS(className); \
+			[CONSTRUCTOR_METHOD, (_this select 1)] call _code; \
+			_code; \
+		}; \
+		case "static":{ \
+			private _code = compile format ['CHECK_THIS; ENSURE_INDEX(1,nil); (["%1", (_this select 0), (_this select 1), 0]) call GETCLASS(className);', className]; \
+			[(_this select 1) select 0, (_this select 1) select 1] call _code; \
+		}; \
+		case "delete": { \
+			if ((count _this) == 2) then {_this set [2,nil]}; \
+			[DECONSTRUCTOR_METHOD, (_this select 2)] call (_this select 1); \
+		}; \
+		default { \
+			private _classID = _this select 0; \
+			private _member = _this select 1; \
+			private _access = DEFAULT_PARAM(3,0); \
+			_this = DEFAULT_PARAM(2,nil); \
+			private _argType = if (isNil "_this") then {""} else {typeName _this}; \
+			switch (true) do { \
+			
+#define FINALIZE_CLASS };};};};}]
