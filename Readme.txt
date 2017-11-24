@@ -32,6 +32,7 @@
 	You can share, modify, distribute this script but don't remove the licence and the name of the original author
 
 	logs:
+		2.3 - fix queueing, log, add new oop 
 		2.2 - delete useless old handlers
 		2.1 - add remoteCall
 		2.0 - first implementation
