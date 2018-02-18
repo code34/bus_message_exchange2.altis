@@ -27,30 +27,35 @@
 
 	bmeclient = NEW(OO_BME, nil);
 
+	// First Example - remoteCall - synchronous call
 	if(local player) then {
-		[] spawn { 
-			while {true} do {
-				_result= ["remoteCall", ["getServerName",  (name player), 2, "nothing"]] call bmeclient;
-				hint format ["RemoteCall: %1", _result];
-				sleep 1;
-			};
+		private _count = 0;
+		while {_count < 10} do {
+			_result= ["remoteCall", ["getServerName",  (name player), 2, "nothing"]] call bmeclient;
+			hint format ["RemoteCall from client: %1", _result];
+			_count = _count + 1;
+			sleep 1;
 		};
 	};
 
+	// Second Example - remoteSpawn - asynchronous call
 	if(local player) then {
-		[] spawn { 
-			while {true} do {
-				_message = "hello server, message send from client";
-				["remoteSpawn", ["sendServerMessage", _message, "server"]] call bmeclient;
-				sleep 3;
-			};
+		private _count = 0;
+		while {_count < 10} do {
+			_message = "hello server, remoteSpawn message send from client";
+			["remoteSpawn", ["sendServerMessage", _message, "server"]] call bmeclient;
+			_count = _count + 1;
+			sleep 1;
 		};
 	};
 
+	// Third Example - remotespawn - asynchronous call from server to client
 	if(isserver) then {
-		while {true} do {
+		private _count = 0;
+		while {_count < 10} do {
 			_message = "hello client, message send from server";
 			["remoteSpawn", ["sendClientMessage", _message, "client"]] call bmeclient;
-			sleep 4;
+			_count = _count + 1;
+			sleep 1;
 		};
 	};

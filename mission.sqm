@@ -47,7 +47,7 @@ class Mission
 	assetType="Free";
 	class Intel
 	{
-		briefingName="Bus Message Exchange 2";
+		briefingName="oo_bme2.vr";
 		timeOfChanges=1800.0002;
 		startWeather=0;
 		startWind=0.1;
