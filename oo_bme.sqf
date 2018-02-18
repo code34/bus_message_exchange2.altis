@@ -49,18 +49,12 @@
 			MEMBER("handlers", nil) pushBack (["runSendSpawnQueue", 0.05] spawn MEMBER("this", nil));
 		};
 
+		// Declare connexion handlers
 		PUBLIC FUNCTION("","declareHandler") {
 			DEBUG(#, "OO_BME::declareHandler")
-			bme_handlers = MEMBER("this", nil);
-			"bme_add_spawnqueue" addPublicVariableEventHandler {
-				["addReceiveSpawnQueue", _this select 1] call bme_handlers;
-			};
-			"bme_add_callqueue" addPublicVariableEventHandler {
-				["addReceiveCallQueue", _this select 1] call bme_handlers;
-			};
-			"bme_add_loopback" addPublicVariableEventHandler {
-				["addReceiveLoopbackQueue", _this select 1] call bme_handlers;
-			};
+			"bme_add_spawnqueue" addPublicVariableEventHandler compile format["['addReceiveSpawnQueue', _this select 1] call %1", MEMBER("this", nil)];
+			"bme_add_callqueue" addPublicVariableEventHandler compile format["['addReceiveCallQueue', _this select 1] call %1", MEMBER("this", nil)];
+			"bme_add_loopback" addPublicVariableEventHandler compile format["['addReceiveLoopbackQueue', _this select 1] call %1", MEMBER("this", nil)];
 		};
 
 		// Entry function for remote call
