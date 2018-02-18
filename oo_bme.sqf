@@ -74,12 +74,11 @@
 			if(_transactid > 99) then { _transactid = 0;};
 			MEMBER("transactid", _transactid);
 
-			if!(_remotefunction isEqualType "") exitwith { MEMBER("log", "BME: wrong type variablename parameter, should be STRING"); false; };
-			if(isnil "_parameters") exitwith { _log = format["BME:  parameters data for %1 handler is nil", _remotefunction]; MEMBER("log", _log); false; };
-			if(isNil "_targetid") exitwith {MEMBER("log", "BME: Client targetID must be define"); false; };
+			if!(_remotefunction isEqualType "") exitwith { MEMBER("log", "Wrong type variablename parameter, should be STRING"); false; };
+			if(isnil "_parameters") exitwith { _log = format["Parameters data for %1 handler is nil", _remotefunction]; MEMBER("log", _log); false; };
+			if(isNil "_targetid") exitwith {MEMBER("log", "Client targetID must be define"); false; };
 
-			private _array= [_transactid, _defaultreturn]; 
-
+			private _array= [_transactid, _defaultreturn];
 			MEMBER("sendcallqueue", nil) pushBack [_remotefunction, _parameters, clientOwner, _targetid, _transactid];
 			MEMBER("getLoopBackReturn", _array);
 		};
@@ -160,13 +159,13 @@
 					_sourceid		= _message select 2;
 					_transactid		= _message select 4;
 					_code 			= nil;
-					
+
 					_code = missionNamespace getVariable _remotefunction;				
 					if!(isnil "_code") then {
 						bme_add_loopback = [_transactid, _sourceid, (_parameters call _code)];
 						_sourceid publicVariableClient "bme_add_loopback";
 					} else {
-						_log = format["BME: server handler function for %1 doesnt exist", _remotefunction];
+						_log = format["Server handler function for %1 doesnt exist", _remotefunction];
 						MEMBER("log", _log);
 					};
 				};
@@ -209,12 +208,12 @@
 			private _destination		= tolower(_this select 2);
 			private _targetid 		= _this select 3;
 			private _log			= "";
-			
-			if!(_remotefunction isEqualType "") exitwith { MEMBER("log", "BME: wrong type variablename parameter, should be STRING"); false; };
-			if(isnil "_parameters") exitwith { _log = format["BME:  parameters data for %1 handler is nil", _remotefunction];MEMBER("log", _log); false; };
-			if!(_destination isEqualType "") exitwith { MEMBER("log", "BME: wrong type destination parameter, should be STRING"); false; };
-			if!(_destination in ["client", "server", "all"]) exitwith {MEMBER("log", "BME: wrong destination parameter should be client|server|all"); false; };
-			
+
+			if!(_remotefunction isEqualType "") exitwith { MEMBER("log", "Wrong type variablename parameter, should be STRING"); false; };
+			if(isnil "_parameters") exitwith { _log = format["Parameters data for %1 handler is nil", _remotefunction];MEMBER("log", _log); false; };
+			if!(_destination isEqualType "") exitwith { MEMBER("log", "Wrong type destination parameter, should be STRING"); false; };
+			if!(_destination in ["client", "server", "all"]) exitwith {MEMBER("log", "Wrong destination parameter should be client|server|all"); false; };
+
 			if(isNil "_targetid") then {
 				MEMBER("sendspawnqueue", nil) pushBack [_remotefunction, _parameters, _destination];
 			} else {
@@ -264,16 +263,15 @@
 					_destination 		= _message select 2;
 					_targetid		= _message select 3;
 					_code 			= nil;
-					
-					if (isNil "_targetid") then { _targetid = 0;};
 
+					if (isNil "_targetid") then { _targetid = 0;};
 
 					if(isserver and ((_destination isEqualTo "server") or (_destination isEqualTo "all"))) then {
 						_code = missionNamespace getVariable _remotefunction;
 						if!(isnil "_code") then {
 							_parameters spawn _code;
 						} else {
-							_log = format["BME: server handler function for %1 doesnt exist", _remotefunction];
+							_log = format["Server handler function for %1 doesnt exist", _remotefunction];
 							MEMBER("log", _log);
 						};
 					};
@@ -283,7 +281,7 @@
 						if!(isnil "_code") then {
 							_parameters spawn _code;
 						} else {
-							_log = format["BME: client handler function for %1 doesnt exist", _remotefunction];
+							_log = format["Client handler function for %1 doesnt exist", _remotefunction];
 							MEMBER("log", _log);
 						};
 					};
@@ -302,7 +300,6 @@
 				if(!isnil "bme_add_spawnqueue") then {
 					switch (bme_add_spawnqueue select 2) do {
 						case "server": { publicvariableserver "bme_add_spawnqueue"; };
-
 						case "client": {
 							if(count bme_add_spawnqueue > 3) then {
 								(bme_add_spawnqueue select 3) publicvariableclient "bme_add_spawnqueue";
@@ -311,7 +308,6 @@
 								publicvariable "bme_add_spawnqueue";
 							};
 						};
-
 						default {
 							if(isserver) then {
 								if!(local player) then { publicvariableserver "bme_add_spawnqueue"; };
@@ -327,8 +323,8 @@
 
 		PUBLIC FUNCTION("string","log") {
 			DEBUG(#, "OO_BME::log")
-			hintc format["%1", _this];
-			diag_log format["%1", _this];
+			hintc format["BME: %1", _this];
+			diag_log format["BME: %1", _this];
 		};
 
 		PUBLIC FUNCTION("","deconstructor") { 
