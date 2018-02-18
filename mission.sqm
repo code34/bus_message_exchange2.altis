@@ -44,8 +44,10 @@ class ScenarioData
 };
 class Mission
 {
+	assetType="Free";
 	class Intel
 	{
+		briefingName="Bus Message Exchange 2";
 		timeOfChanges=1800.0002;
 		startWeather=0;
 		startWind=0.1;
