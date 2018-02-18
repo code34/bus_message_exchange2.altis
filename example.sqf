@@ -36,4 +36,4 @@
 		if(isNil "counterserver") then { counterserver = 0;};
 		counterserver = counterserver + 1;
 		format ["hello %1, my name is server%2 and i return you a result", _this, counterserver];
-	};	
+	};
