@@ -47,6 +47,7 @@
 			MEMBER("handlers", nil) pushBack (["runReceiveSpawnQueue", 0.05] spawn MEMBER("this", nil));
 			MEMBER("handlers", nil) pushBack (["runSendCallQueue", 0.05] spawn MEMBER("this", nil));
 			MEMBER("handlers", nil) pushBack (["runSendSpawnQueue", 0.05] spawn MEMBER("this", nil));
+			MEMBER("handlers", nil) pushBack ("garbageReceiveLoopBackQueue" spawn MEMBER("this", nil));
 		};
 
 		// Declare connexion handlers
@@ -131,10 +132,22 @@
 		// insert message in loopback queue for server / client
 		// _transactid = _this select 0;
 		// _sourceid = _this select 1
-		// _return = _this select ;
+		// _return = _this select 3;
 		PUBLIC FUNCTION("array","addReceiveLoopBackQueue") {
 			DEBUG(#, "OO_BME::addReceiveLoopBackQueue")
-			MEMBER("receiveloopbackqueue", nil) pushBack _this;
+			MEMBER("receiveloopbackqueue", nil) pushBack [_this select 0, _this select 1, _this select 2, time + MEMBER("callreleasetime", nil)];
+		};
+
+		// function garbage the loopback queue of expired return
+		PUBLIC FUNCTION("","garbageReceiveLoopBackQueue") {
+			DEBUG(#, "OO_BME::garbageReceiveLoopBackQueue")
+			while { true } do {
+				{
+					if (time > _x select 3) then { MEMBER("receiveloopbackqueue", nil) deleteAt _forEachIndex; };
+					uisleep 0.01;
+				}foreach MEMBER("receiveloopbackqueue", nil);
+				uisleep 0.01;
+			};
 		};
 
 		// unpop queue of call receive messages
@@ -183,7 +196,7 @@
 			private _run = true;
 			private _transactid = _this select 0;
 			private _return = _this select 1;
-			private _index = 0;
+			private _time = 0;
 
 			while { _run } do {
 				{
@@ -193,8 +206,8 @@
 						MEMBER("receiveloopbackqueue", nil) deleteAt _forEachIndex;
 					} ;
 				}foreach MEMBER("receiveloopbackqueue", nil);
-				_index = _index + 0.05;
-				if (_index > MEMBER("callreleasetime", nil)) then { _run = false; };
+				_time = _time + 0.05;
+				if (_time > MEMBER("callreleasetime", nil)) then { _run = false; };
 				uiSleep 0.05;
 			};
 			_return;
