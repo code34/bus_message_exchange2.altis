@@ -25,7 +25,7 @@
 	*/
 
 	/*
-	Function : ["remoteCall", ["remotefunction", data, "target", targetid, defaultreturn, releasetime ]] call global_bme;
+	Function : ["remoteCall", ["remotefunction", data, "target", targetid, defaultreturn, timeout]] call _bme;
 	@remotefunction is a string declare in clienthandler or serverhandler file
 	@parameters of remotefunction
 	@targetid clientid of the target or 2 for server
@@ -34,7 +34,7 @@
 	*/
 
 	/*
-	Function : ["remoteSpawn", ["remotefunction", data, "target", playerid]] call global_bme;
+	Function : ["remoteSpawn", ["remotefunction", data, "target", playerid]] call _bme;
 	@remotefunction is a string declare in clienthandler or serverhandler file
 	@data paramters of remotefunction
 	@target is a string ("client" or "server" or "all") declare the target where the remote function will be exectued

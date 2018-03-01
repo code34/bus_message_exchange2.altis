@@ -24,7 +24,7 @@
 		put this code into your mission init.sqf
 		call compile preprocessFileLineNumbers "oo_bme.sqf";
 
-	See example mission in directory: bus_exchange_message.Altis
+	See example mission in directory
 	
 	Licence: 
 	You can share, modify, distribute this script but don't remove the licence and the name of the original author
