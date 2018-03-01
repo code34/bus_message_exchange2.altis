@@ -32,6 +32,7 @@
 	You can share, modify, distribute this script but don't remove the licence and the name of the original author
 
 	logs:
+		2.4 - fix remotecall, add timeout, switch to vr map, clean examples, add new oop, fix handlers with schedule code
 		2.3 - fix queueing, log, add new oop 
 		2.2 - delete useless old handlers
 		2.1 - add remoteCall

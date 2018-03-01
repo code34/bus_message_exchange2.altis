@@ -23,13 +23,17 @@
 	*/
 
 	sendClientMessage = {
-		hint format["BME: client side: %1", _this];
-		diag_log format["BME: client side: %1", _this];
+		if(isNil "clientmessage") then { clientmessage = 0;};
+		clientmessage = clientmessage + 1;
+		hint format["BME: client side: %1 n:%2", _this, clientmessage];
+		diag_log format["BME: client side: %1 n:%2", _this, clientmessage];
 	};
 
 	sendServerMessage = {
-		hint format["BME: server side: %1", _this];
-		diag_log format["BME: server side: %1", _this];
+		if(isNil "servermessage") then { servermessage = 0;};
+		servermessage = servermessage + 1;
+		hint format["BME: server side: %1 n:%2", _this, servermessage];
+		diag_log format["BME: server side: %1 n:%2", _this, servermessage];
 	};
 
 	getServerName = {
