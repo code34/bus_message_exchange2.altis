@@ -25,11 +25,11 @@
 	*/
 
 	/*
-	Function : ["remoteCall", ["remotefunction", data, "target", targetid, defaultreturn, timeout]] call _bme;
+	Function : ["remoteCall", ["remotefunction", parameters, targetid, defaultreturn, timeout]] call _bme;
 	@remotefunction is a string declare in clienthandler or serverhandler file
 	@parameters of remotefunction
-	@targetid clientid of the target or 2 for server
-	@defaultreturn : default return, in case of no return of the target
+	@targetid: clientid or 2 if server
+	@defaultreturn : default return, in case of timeout
 	@timeout: limit of time to wait for the answer of target
 	*/
 
