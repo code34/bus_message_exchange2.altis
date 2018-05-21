@@ -23,8 +23,6 @@
 	Usage:
 		put this code into your mission init.sqf
 		call compile preprocessFileLineNumbers "oo_bme.sqf";
-		call compile preprocessFile "BME_clienthandler.sqf";
-		call compile preprocessFile "BME_serverhandler.sqf";
 
 	See example mission in directory
 	
