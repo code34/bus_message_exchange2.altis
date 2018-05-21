@@ -337,7 +337,7 @@
 
 		PUBLIC FUNCTION("string","log") {
 			DEBUG(#, "OO_BME::log")
-			hintc format["BME: %1", _this];
+			format["BME: %1", _this] call BIS_fnc_error;
 			diag_log format["BME: %1", _this];
 		};
 
