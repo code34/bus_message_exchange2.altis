@@ -21,7 +21,7 @@
 	/*
 	Function: 
 	_bme = "new" call OO_BME;
-	Create a new bme object (require to create at same time a handler)
+	Create a new bme object
 	*/
 
 	/*
@@ -34,19 +34,16 @@
 	*/
 
 	/*
-	Function : ["remoteSpawn", ["remotefunction", data, "target", playerid]] call _bme;
+	Function : ["remoteSpawn", ["remotefunction", parameters, "target", playerid]] call _bme;
 	@remotefunction is a string declare in clienthandler or serverhandler file
-	@data paramters of remotefunction
+	@parameters of remotefunction
 	@target is a string ("client" or "server" or "all") declare the target where the remote function will be exectued
 	@playerid (optionnal) is a scalar defined by the player id where the code should be executed
 	*/
 
 	How to declare remote functions
 	===========================
-	You have to declare your remote functions as normal function with global declaration name
-
-	The handler declaration must respect this syntax:
-
-	remotefunction = { code to execute on other side }
+	You have to declare your remote function on the target side, as a normal function with global variable assignement
 	
-	You can declare thoses functions directly in your code. 
+	example:
+	remotefunction = { code to execute on target side };
