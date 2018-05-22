@@ -100,7 +100,7 @@
 						if!((bme_add_callqueue select 2) isEqualTo (bme_add_callqueue select 3)) then{
 							(bme_add_callqueue select 3) publicvariableclient "bme_add_callqueue";
 						} else {
-							if((local player) and (isserver)) then { MEMBER("addReceiveCallQueue", bme_add_callqueue);	};
+							if((local player) and (isserver)) then { MEMBER("addReceiveCallQueue", bme_add_callqueue); };
 						};
 					};
 				};
