@@ -23,7 +23,8 @@
 	call compile preprocessFileLineNumbers "oo_bme.sqf";
 	call compile preprocessFileLineNumbers "example.sqf";
 
-	sleep 2;
+	// only for debug purpose
+	profilenamespace setvariable ["BIS_fnc_init_displayErrors",true];
 
 	bmeclient = NEW(OO_BME, nil);
 

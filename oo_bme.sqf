@@ -47,7 +47,6 @@
 			MEMBER("handlers", nil) pushBack (["runReceiveSpawnQueue", 0.05] spawn MEMBER("this", nil));
 			MEMBER("handlers", nil) pushBack (["runSendCallQueue", 0.05] spawn MEMBER("this", nil));
 			MEMBER("handlers", nil) pushBack (["runSendSpawnQueue", 0.05] spawn MEMBER("this", nil));
-			MEMBER("handlers", nil) pushBack ("garbageReceiveLoopBackQueue" spawn MEMBER("this", nil));
 		};
 
 		// Declare connexion handlers
@@ -224,7 +223,7 @@
 				MEMBER("sendspawnqueue", nil) pushBack [_remotefunction, _parameters, _destination, _targetid];
 			};
 			true;
-		};		
+		};
 
 		// function call by addPublicVariableEventHandler
 		// insert message in spawn queue for server / client / all
@@ -337,7 +336,7 @@
 
 		PUBLIC FUNCTION("string","log") {
 			DEBUG(#, "OO_BME::log")
-			format["BME: %1", _this] call BIS_fnc_error;
+			["BME: %1", _this] call BIS_fnc_error;
 			diag_log format["BME: %1", _this];
 		};
 
