@@ -26,13 +26,13 @@
 	// only for debug purpose
 	profilenamespace setvariable ["BIS_fnc_init_displayErrors",true];
 
-	bmeclient = NEW(OO_BME, nil);
+	_bmeclient = NEW(OO_BME, nil);
 
 	// First Example - remoteCall - synchronous call
 	if(local player) then {
 		private _count = 0;
 		while {_count < 10} do {
-			_result= ["remoteCall", ["getServerName",  (name player), 2, "nothing"]] call bmeclient;
+			_result= ["remoteCall", ["getServerName",  (name player), 2, "nothing"]] call _bmeclient;
 			hint format ["RemoteCall from client: %1", _result];
 			_count = _count + 1;
 			sleep 1;
@@ -44,7 +44,7 @@
 		private _count = 0;
 		while {_count < 10} do {
 			_message = "hello server, remoteSpawn message send from client";
-			["remoteSpawn", ["sendServerMessage", _message, "server"]] call bmeclient;
+			["remoteSpawn", ["sendServerMessage", _message, "server"]] call _bmeclient;
 			_count = _count + 1;
 			sleep 1;
 		};
@@ -55,7 +55,7 @@
 		private _count = 0;
 		while {_count < 10} do {
 			_message = "hello client, message send from server";
-			["remoteSpawn", ["sendClientMessage", _message, "client"]] call bmeclient;
+			["remoteSpawn", ["sendClientMessage", _message, "client"]] call _bmeclient;
 			_count = _count + 1;
 			sleep 1;
 		};
