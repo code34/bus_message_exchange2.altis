@@ -59,10 +59,10 @@
 
 		// Entry function for remote call
 		// Endpoint for loopback result
-		//	private _remotefunction 	= _this select 0;
-		//	private _parameters 		=  _this select 1;
-		//	private _targetid 		= _this select 3;
-		//	private _defaultreturn		= _this select 4;
+		//	private _remotefunction = _this select 0;
+		//	private _parameters =  _this select 1;
+		//	private _targetid = _this select 3;
+		//	private _defaultreturn = _this select 4;
 		PUBLIC FUNCTION("array","remoteCall") {
 			DEBUG(#, "OO_BME::remoteCall")
 			private _remotefunction = _this select 0;
@@ -158,10 +158,10 @@
 			while { true } do {
 				_message = MEMBER("receivecallqueue", nil) deleteAt 0;
 				if(!isnil "_message") then {
-					_remotefunction	= _message select 0;
-					_parameters		= _message select 1;
-					_sourceid		= _message select 2;
-					_transactid		= _message select 4;
+					_remotefunction = _message select 0;
+					_parameters = _message select 1;
+					_sourceid = _message select 2;
+					_transactid = _message select 4;
 					_code 	= {};
 
 					_code = missionNamespace getVariable _remotefunction;
@@ -206,11 +206,11 @@
 		//  Entry function for remote spawn
 		PUBLIC FUNCTION("array","remoteSpawn") {
 			DEBUG(#, "OO_BME::remoteSpawn")
-			private _remotefunction 	= _this select 0;
-			private _parameters 		=  _this select 1;
-			private _destination		= tolower(_this select 2);
-			private _targetid 		= _this select 3;
-			private _log			= "";
+			private _remotefunction = _this select 0;
+			private _parameters = _this select 1;
+			private _destination = tolower(_this select 2);
+			private _targetid = _this select 3;
+			private _log = "";
 
 			if!(_remotefunction isEqualType "") exitwith { MEMBER("log", "Wrong type variablename parameter, should be STRING"); false; };
 			if(isnil "_parameters") exitwith { _log = format["Parameters data for %1 handler is nil", _remotefunction];MEMBER("log", _log); false; };
